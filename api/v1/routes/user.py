@@ -178,36 +178,6 @@ def admin_registers_user(
         AdminCreateUserResponse: The full details of the newly created user
     '''
     return user_service.super_admin_create_user(db, user_request)
-    
-
-@user_router.get('/{role_id}/roles', status_code=status.HTTP_200_OK)
-async def get_users_by_role(
-    role_id: Literal["admin", "user", "guest", "owner"], 
-    db: Session = Depends(get_db), 
-    current_user: User = Depends(user_service.get_current_user)
-):
-    '''Endpoint to get all users by role'''
-    users = user_service.get_users_by_role(db, role_id, current_user)
-
-    return success_response(
-        status_code=200,
-        message='Users retrieved successfully',
-        data=jsonable_encoder(users)
-    )
-
-
-@user_router.get('/organisations', status_code=200, response_model=success_response)
-def get_current_user_organizations(
-    db: Session = Depends(get_db), 
-    current_user: User = Depends(user_service.get_current_user)
-):
-    '''Endpoint to get all current user organisations'''
-
-    return success_response(
-        status_code=200,
-        message='Organisations fetched successfully',
-        data=jsonable_encoder(current_user.organizations)
-    )
 
 
 @user_router.get("/{user_id}", status_code=status.HTTP_200_OK)
