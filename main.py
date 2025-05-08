@@ -191,8 +191,8 @@ async def exception(request: Request, exc: Exception):
     )
 
 
-'''STATIC_DIR = "static/profile_images"
-os.makedirs(STATIC_DIR, exist_ok=True)'''
+STATIC_DIR = "static/profile_images"
+os.makedirs(STATIC_DIR, exist_ok=True)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
