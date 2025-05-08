@@ -1,22 +1,23 @@
-# FASTAPI
-FastAPI My Fast P2P
+# OptiCheck
+OptiCheck Health App
 
 ## Setup
 
 **Cloning**
-- clone the repository using `git clone https://github.com/chionz/My_FastP2P`
-- `cd` into the directory My_FastP2P
+- clone the repository using `git clone https://github.com/chionz/opticheck.git`
+- `cd` into the directory `opticheck`
 - switch branch using `git checkout backend`
 
 1. Create a virtual environment.
  ```sh
-    python3 -m venv .venv
+    python3.11 -m venv .venv
  ```
 2. Activate virtual environment.
 ```sh
     source /path/to/venv/bin/activate`
 ```
 3. Install project dependencies `pip install -r requirements.txt`
+
 4. Create a .env file by copying the .env.sample file
 `cp .env.sample .env`
 
@@ -40,8 +41,8 @@ sudo -u root psql
 ```
 ```sql
 CREATE USER user WITH PASSWORD 'your desired password'; 
-CREATE DATABASE fastapi_myp2p;
-GRANT ALL PRIVILEGES ON DATABASE fastapi_myp2p TO user;
+CREATE DATABASE database_name;
+GRANT ALL PRIVILEGES ON DATABASE database_name TO user;
 ```
 
 **Starting the database**
@@ -64,24 +65,25 @@ python3 seed.py
 
 **Adding tables and columns to models**
 
-After creating new tables, or adding new models. Make sure to run alembic revision --autogenerate -m "Migration messge"
+After creating new tables, or adding new models. Make sure to run `alembic revision --autogenerate -m "Migration messge"`
 
-After creating new tables, or adding new models. Make sure you import the new model properly in th 'api/v1/models/__init__.py file
+After creating new tables, or adding new models. Make sure you import the new model properly in th `api/v1/models/__init__.py` file
 
-After importing it in the init file, you need not import it in the /alembic/env.py file anymore
+After importing it in the init file, you need not import it in the `/alembic/env.py` file anymore
 
 
 **Adding new routes**
 
 To add a new route, confirm if a file relating to that route is not already created. If it is add the route in that file using the already declared router
 
-If the there is no file relating to the route in the 'api/v1/routes/' directory create a new one following the naming convention
+If the there is no file relating to the route in the `api/v1/routes/` directory create a new one following the naming convention
 
 After creating the new route file, declare the router and add the prefix as well as the tag
 
-The prefix should not include the base prefix ('/api/v1') as it is already includedin the base `api_version_one` router
+The prefix should not include the base prefix (`/api/v1`) as it is already includedin the base `api_version_one` router
 
-After creating the router, import it in the 'api/v1/routes/__init__.py' file and include the router in the `api_version_one` router using
+After creating the router, import it in the `api/v1/routes/__init__.py` file and include the router in the `api_version_one` router using
+
 ```python
 api_version_one.include_router(<router_name>)
 ```
@@ -114,5 +116,6 @@ then, run this again.
 ## update 
 please make sure to test your endpoint or model before pushing.
 push your alembic migrations.
-# My_FastP2P
-# My_FastP2P
+
+# OptiCheck
+
