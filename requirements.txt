@@ -33,6 +33,7 @@ Faker==26.0.0
 fastapi==0.111.1
 fastapi-cli==0.0.4
 fastapi-mail==1.4.1
+fastapi_pagination
 filelock==3.15.4
 flake8==7.1.0
 frozenlist==1.4.1
