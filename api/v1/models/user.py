@@ -27,8 +27,6 @@ class User(BaseTableModel):
     gender = Column(genders, default="others", nullable=False)
     age = Column(Integer, nullable=False)
 
-    activity_logs = relationship("ActivityLog", back_populates="user")
-
     token_login = relationship(
         "TokenLogin", back_populates="user", uselist=False, cascade="all, delete-orphan"
     )
