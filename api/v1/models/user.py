@@ -27,7 +27,7 @@ class User(BaseTableModel):
     is_super_admin = Column(Boolean, server_default=text("false"))
     is_deleted = Column(Boolean, server_default=text("false"))
 
-    gender = Column(genders, default="others", nullable=False)
+    gender = Column(genders, nullable=True)
     age = Column(Integer, nullable=True)
 
     token_login = relationship(

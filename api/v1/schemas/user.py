@@ -24,10 +24,10 @@ class UserCreate(BaseModel):
 
     email: EmailStr
     password: str
-    first_name: str
-    last_name: str
-    gender: str
-    age: int
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    gender: Optional[str] = None
+    age: Optional[int] = None
 
     @field_validator("password")
     @classmethod
