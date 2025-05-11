@@ -150,17 +150,22 @@ class UserService(Service):
         db.commit()
         db.refresh(user)
 
-        # # Create notification settings directly for the user
-        #notification_setting_service.create(db=db, user=user)
+        return user
+    
+    def create_by_wallet(self, db: Session, schema: user.WalletLoginPayload):
+        """Creates a new user"""
 
-        # create data privacy setting
+        user = db.query(User).filter(User.wallet_address == schema.public_key).first()
+        
+        if user:
+            return user
 
-        #data_privacy = DataPrivacySetting(user_id=user.id)
-
-        #db.add(data_privacy)
-        #db.commit()
-        #db.refresh(data_privacy)
-
+        
+        user = User(wallet_address=schema.public_key)
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+        
         return user
 
     def super_admin_create_user(

@@ -16,16 +16,19 @@ genders = ENUM("male", "female", name="gender", create_type=True)
 class User(BaseTableModel):
     __tablename__ = "users"
 
-    email = Column(String, unique=True, nullable=False)
-    password = Column(String, nullable=False)
+    email = Column(String, unique=True, nullable=True)
+    password = Column(String, nullable=True)
     first_name = Column(String, nullable=True)
     last_name = Column(String, nullable=True)
+
+    wallet_address = Column(String, unique=True, nullable=True) 
+
     avatar_url = Column(String, nullable=True)
     is_super_admin = Column(Boolean, server_default=text("false"))
     is_deleted = Column(Boolean, server_default=text("false"))
 
     gender = Column(genders, default="others", nullable=False)
-    age = Column(Integer, nullable=False)
+    age = Column(Integer, nullable=True)
 
     token_login = relationship(
         "TokenLogin", back_populates="user", uselist=False, cascade="all, delete-orphan"
@@ -38,7 +41,6 @@ class User(BaseTableModel):
     def to_dict(self):
         obj_dict = super().to_dict()
         obj_dict.pop("password")
-        obj_dict['adverts'] = [task.to_dict() for task in self.adverts]
         return obj_dict
 
     def __str__(self):

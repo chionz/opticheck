@@ -11,10 +11,14 @@ from fastapi import (
 from fastapi.encoders import jsonable_encoder
 from sqlalchemy.orm import Session
 
+from nacl.signing import VerifyKey
+from nacl.exceptions import BadSignatureError
+import base58
+
 from api.utils.success_response import success_response
 from api.core.dependencies.email_sender import send_email
 from api.utils.send_mail import send_magic_link
-from api.v1.schemas.user import Token, LoginRequest, UserCreate, EmailRequest
+from api.v1.schemas.user import Token, LoginRequest, UserCreate, EmailRequest, WalletLoginPayload
 from api.v1.schemas.token import TokenRequest
 from api.v1.schemas.user import MagicLinkRequest
 from api.db.database import get_db
@@ -242,11 +246,11 @@ def refresh_access_token(
     return response
 
 
-@auth.post("/request-token", status_code=status.HTTP_200_OK)
+""" @auth.post("/request-token", status_code=status.HTTP_200_OK)
 async def request_signin_token(
     email_schema: EmailRequest, db: Session = Depends(get_db)
 ):
-    """Generate and send a 6-digit sign-in token to the user's email"""
+    Generate and send a 6-digit sign-in token to the user's email
 
     user = user_service.fetch_by_email(db, email_schema.email)
 
@@ -266,7 +270,7 @@ async def request_signin_token(
 async def verify_signin_token(
     token_schema: TokenRequest, db: Session = Depends(get_db)
 ):
-    """Verify the 6-digit sign-in token and log in the user"""
+    Verify the 6-digit sign-in token and log in the user
 
     user = user_service.verify_login_token(db, schema=token_schema)
 
@@ -300,7 +304,7 @@ async def verify_signin_token(
 def request_magic_link(
     request: MagicLinkRequest, response: Response, db: Session = Depends(get_db)
 ):
-    """Endpoint to request a magic link for login"""
+    Endpoint to request a magic link for login
 
     user = user_service.fetch_by_email(db=db, email=request.email)
     access_token = user_service.create_access_token(user_id=user.id)
@@ -313,7 +317,7 @@ def request_magic_link(
 async def verify_magic_link(
     token_schema: Token, response: Response, db: Session = Depends(get_db)
 ):
-    """Endpoint to verify the magic link and log in the user"""
+    Endpoint to verify the magic link and log in the user
 
     user, access_token = AuthService.verify_magic_token(token_schema.access_token, db)
 
@@ -349,7 +353,7 @@ async def verify_magic_link(
     )
 
     return response
-
+ """
 
 @auth.get("/token")
 def get_access_token(request: Request, response: Response):
@@ -362,3 +366,59 @@ def get_access_token(request: Request, response: Response):
     if not new_access_token:
         raise HTTPException(status_code=401, detail="Not authenticated")
     return {"access_token": new_access_token}
+
+
+@auth.post("/wallet-login")
+def wallet_login(payload: WalletLoginPayload, db: Session = Depends(get_db)):
+
+    try:
+        public_key_bytes = base58.b58decode(payload.public_key)
+        signature_bytes = base58.b58decode(payload.signature)
+
+        verify_key = VerifyKey(public_key_bytes)
+
+        verify_key.verify(payload.message.encode(), signature_bytes)
+
+    except (BadSignatureError, ValueError, Exception):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid signature. Wallet verification failed.",
+        )
+    
+
+    user = user_service.create_by_wallet(db=db, schema=payload)
+
+    # Create access and refresh tokens
+    access_token = user_service.create_access_token(user_id=user.id)
+    refresh_token = user_service.create_refresh_token(user_id=user.id)
+
+    response = success_response(
+        status_code=201,
+        message="User Authentication successfully",
+        data={
+            "access_token": access_token,
+            "token_type": "bearer",
+            "user": jsonable_encoder(
+                user,
+                exclude=[
+                    "password",
+                    "is_super_admin",
+                    "is_deleted",
+                    "is_verified",
+                    "updated_at",
+                ],
+            ),
+        },
+    )
+
+    # Add refresh token to cookies
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh_token,
+        expires=timedelta(days=60),
+        httponly=True,
+        secure=True,
+        samesite="none",
+    )
+
+    return response

@@ -154,3 +154,8 @@ class UserRoleSchema(BaseModel):
             raise ValueError("Role has to be one of admin, guest, user, or owner")
         return value
     
+
+class WalletLoginPayload(BaseModel):
+    public_key: str      
+    message: str         
+    signature: str       
