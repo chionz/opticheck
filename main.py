@@ -191,28 +191,6 @@ async def exception(request: Request, exc: Exception):
     )
 
 
-STATIC_DIR = "static/profile_images"
-os.makedirs(STATIC_DIR, exist_ok=True)
-app.mount("/static", StaticFiles(directory="static"), name="static")
-
-
-
-
-STATIC_DIR = '/tmp/static'  # Ensure STATIC_DIR is also in a writable location
-try:
-    if not os.path.exists(STATIC_DIR):
-        os.makedirs(STATIC_DIR)
-except Exception as e:
-    print(f"Error creating static directory: {e}")
-    pass  # Ignore the error and continue
-
-try:
-    app.mount('/static', StaticFiles(directory=STATIC_DIR), name='static')
-except Exception as e:
-    print(f"Error mounting directories: {e}")
-    pass 
-
-
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000)) 
 
