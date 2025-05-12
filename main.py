@@ -54,29 +54,8 @@ def run_migrations():
         print(f"Error running Alembic migration: {e}")
 
 
-'''@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # This code runs at startup
-    try:
-        subprocess.run(["alembic", "upgrade", "head"], check=True)
-        print("Alembic migration applied successfully.")
-    except subprocess.CalledProcessError as e:
-        print(f"Error applying Alembic migration: {e}")
-
-    yield  # Let the application run
-
-app = FastAPI(lifespan=lifespan)'''
-
 # Set up email templates and css static files
 email_templates = Jinja2Templates(directory='api/core/dependencies/email/templates')
-
-'''# MEDIA_DIR = os.path.expanduser('~/.media')
-MEDIA_DIR = './media'
-if not os.path.exists(MEDIA_DIR):
-    os.makedirs(MEDIA_DIR)
-
-# Load up media static files
-app.mount('/media', StaticFiles(directory=MEDIA_DIR), name='media')'''
 
 # Define the temporary directory
 MEDIA_DIR = '/tmp/media'
@@ -112,10 +91,10 @@ app.add_middleware(
 
 app.include_router(api_version_one)
 
-@app.get("/api", tags=["Api Home"])
+@app.get("/", tags=["API Home"])
 async def get_root(request: Request) -> dict:
     return JsonResponseDict(
-        message="Welcome to OptiCheck API", status_code=status.HTTP_200_OK, data={"URL": ""}
+        message="Welcome to OptiCheck API. I'm Listening to Curls", status_code=status.HTTP_200_OK, data={"URL": ""}
     )
 
 
@@ -195,4 +174,3 @@ if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000)) 
 
     uvicorn.run("main:app", host="0.0.0.0", port=port, reload=True)
-    #uvicorn.run("main:app", host="0.0.0.0", port=7001, reload=True)
