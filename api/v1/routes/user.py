@@ -13,6 +13,7 @@ from api.v1.schemas.user import (
 )
 from api.db.database import get_db
 from api.v1.services.user import user_service
+from api.v1.services.eye_tests import eyetest_service
 
 
 user_router = APIRouter(prefix="/users", tags=["Users"])
@@ -24,11 +25,9 @@ def get_current_user_details(
     current_user: User = Depends(user_service.get_current_user),
 ):
     """Endpoint to get current user details"""
-
-    return success_response(
-        status_code=200,
-        message="User details retrieved successfully",
-        data=jsonable_encoder(
+    no_test_done = eyetest_service.all_test_count(db, user_id=current_user.id)
+    vision = eyetest_service.dashboard_vision_test(db, user_id=current_user.id)
+    user = jsonable_encoder(
             current_user,
             exclude=[
                 "password",
@@ -37,7 +36,15 @@ def get_current_user_details(
                 "is_verified",
                 "updated_at",
             ],
-        ),
+    )
+    return success_response(
+        status_code=200,
+        message="User details retrieved successfully",
+        data= {
+            "user": user,
+            "test_taken": no_test_done,
+            "eye_test_data": vision
+        }
     )
 
 

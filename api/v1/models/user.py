@@ -38,6 +38,19 @@ class User(BaseTableModel):
         "OAuth", back_populates="user", uselist=False, cascade="all, delete-orphan"
     )
 
+    snellen_tests = relationship(
+        "SnellenChartTest", back_populates="user", cascade="all, delete-orphan"
+    )
+
+    color_tests = relationship(
+        "ColorBlindnessTest", back_populates="user", cascade="all, delete-orphan"
+    )
+
+    tumbling_tests = relationship(
+        "TumblingETest", back_populates="user", cascade="all, delete-orphan"
+    )
+
+
     def to_dict(self):
         obj_dict = super().to_dict()
         obj_dict.pop("password")

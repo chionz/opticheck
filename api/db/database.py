@@ -30,7 +30,7 @@ def get_db_engine(test_mode: bool = False):
         DATABASE_URL = (
             f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
         )
-    #print (f"connecting to {DATABASE_URL}")
+    print (f"connecting to {DATABASE_URL}")
     return create_engine(DATABASE_URL)
 
 

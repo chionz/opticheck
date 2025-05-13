@@ -422,3 +422,36 @@ def wallet_login(payload: WalletLoginPayload, db: Session = Depends(get_db)):
     )
 
     return response
+
+
+@auth.get("/available-wallets")
+def available_wallets():
+    wallets = [
+                {
+                    "name": "Phantom",
+                    "icon": "https://lcdevuaqwaynmlhtpmuo.supabase.co/storage/v1/object/public/walletimages//phantom.png",
+                    "url": "https://phantom.app"
+                },
+                {
+                    "name": "Solflare",
+                    "icon": "https://lcdevuaqwaynmlhtpmuo.supabase.co/storage/v1/object/public/walletimages//solflare.webp",
+                    "url": "https://solflare.com"
+                },
+                {
+                    "name": "Slope",
+                    "icon": "https://lcdevuaqwaynmlhtpmuo.supabase.co/storage/v1/object/public/walletimages//slope.png",
+                    "url": "https://slope.finance"
+                },
+                {
+                    "name": "Exodus",
+                    "icon": "https://lcdevuaqwaynmlhtpmuo.supabase.co/storage/v1/object/public/walletimages//exodus.png",
+                    "url": "https://www.exodus.com"
+                },
+                {
+                    "name": "Ledger",
+                    "icon": "https://lcdevuaqwaynmlhtpmuo.supabase.co/storage/v1/object/public/walletimages//ledger.svg",
+                    "url": "https://www.ledger.com"
+                }
+    ]
+
+    return wallets
