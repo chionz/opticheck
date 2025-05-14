@@ -82,7 +82,7 @@ def register(
         expires=timedelta(days=60),
         httponly=True,
         secure=True,
-        samesite="none",
+        samesite="None",
     )
 
     return response
@@ -188,8 +188,8 @@ def login(
         value=refresh_token,
         expires=timedelta(days=30),
         httponly=True,
-        secure=False,
-        samesite="lax",
+        secure=True,
+        samesite="None",
     )
 
     return response
