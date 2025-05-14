@@ -256,6 +256,19 @@ def get_access_token(request: Request, response: Response):
         raise HTTPException(status_code=401, detail="Not authenticated")
     return {"access_token": new_access_token}
 
+""" @auth.get("/refresh-token")
+def get_refresh_token(request: Request, response: Response):
+    current_refresh_token = request.cookies.get("refresh_token")
+    new_access_token, new_refresh_token = user_service.refresh_access_token(
+        current_refresh_token
+    )
+    refresh_token = user_service.create_refresh_token(user_id)
+    response.set_cookie(key="access_token", value=new_access_token, httponly=True)
+    response.set_cookie(key="refresh_token", value=new_refresh_token, httponly=True)
+    if not new_access_token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    return {"access_token": new_access_token} """
+
 
 @auth.post("/wallet-login")
 def wallet_login(payload: WalletLoginPayload, db: Session = Depends(get_db)):
@@ -315,7 +328,7 @@ def wallet_login(payload: WalletLoginPayload, db: Session = Depends(get_db)):
 
 @auth.get("/available-wallets")
 def available_wallets():
-    wallets = wallets [
+    wallets = [
                 {
                     "name": "Phantom",
                     "icon": "https://lcdevuaqwaynmlhtpmuo.supabase.co/storage/v1/object/public/walletimages//phantom.png",
@@ -343,4 +356,6 @@ def available_wallets():
                 }
     ]
 
-    return wallets
+    return {
+        "wallets": wallets
+            }
