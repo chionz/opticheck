@@ -149,7 +149,6 @@ def adminlogin(
 
 @auth.post("/login", status_code=status.HTTP_200_OK, response_model=success_response)
 def login(
-    background_tasks: BackgroundTasks,
     login_request: LoginRequest,
     db: Session = Depends(get_db),
 ):
@@ -426,7 +425,7 @@ def wallet_login(payload: WalletLoginPayload, db: Session = Depends(get_db)):
 
 @auth.get("/available-wallets")
 def available_wallets():
-    wallets = [
+    wallets = wallets [
                 {
                     "name": "Phantom",
                     "icon": "https://lcdevuaqwaynmlhtpmuo.supabase.co/storage/v1/object/public/walletimages//phantom.png",

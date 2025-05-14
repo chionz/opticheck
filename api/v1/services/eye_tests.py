@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from api.core.base.services import Service
 from api.v1.models.eye_tests import SnellenChartTest, ColorBlindnessTest, TumblingETest
 from api.v1.models.user import User
+from api.v1.schemas.eye_tests import SnellenTest
 
 
 class EyeTestService(Service):
@@ -19,6 +20,31 @@ class EyeTestService(Service):
 
     def delete(self):
         pass
+
+    def snellen_test_create(self, db:Session, schema:SnellenTest):
+        schema.visual_acuity = f'{schema.user_acuity}/{schema.normal_acuity}'
+        test = SnellenChartTest(**schema.model_dump())
+        db.add(test)
+        db.commit()
+        db.refresh(test)
+
+        return test
+
+    def user_snellen_tests(self, db:Session, user_id):
+
+        tests = db.query(SnellenChartTest).filter(user_id==user_id).all()
+
+        return tests
+    
+    def delete_user_snellen_tests(self, db:Session, user_id, test_id):
+
+        tests = db.query(SnellenChartTest).filter(SnellenChartTest.user_id==user_id, SnellenChartTest.id==test_id).first()
+
+        db.delete(tests)
+        db.commit()
+        db.refresh(tests)
+
+        return tests
 
     def snellen_chart_count(self, db:Session, user_id):
         snellen_user_test = db.query(SnellenChartTest).filter(user_id==user_id).count()
@@ -48,5 +74,7 @@ class EyeTestService(Service):
         snellen = db.query(SnellenChartTest).filter(user_id==user_id).first()
 
         return snellen
+    
+    
 
 eyetest_service = EyeTestService()
