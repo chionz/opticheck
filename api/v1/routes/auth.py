@@ -61,6 +61,7 @@ def register(
         message="User created successfully",
         data={
             "access_token": access_token,
+            "refresh_token": refresh_token,
             "token_type": "bearer",
             "user": jsonable_encoder(
                 user,
@@ -82,7 +83,7 @@ def register(
         expires=timedelta(days=60),
         httponly=True,
         secure=True,
-        samesite="None",
+        samesite="none",
     )
 
     return response
@@ -189,7 +190,7 @@ def login(
         expires=timedelta(days=30),
         httponly=True,
         secure=True,
-        samesite="None",
+        samesite="none",
     )
 
     return response
