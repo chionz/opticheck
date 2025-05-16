@@ -76,7 +76,8 @@ except Exception as e:
 
 
 origins = [
-   "*"
+   "https://opticheck.netlify.app",
+   
 ]
 
 
