@@ -35,7 +35,7 @@ def get_refresh_token(request: Request, response: Response):
     return {"access_token": new_access_token} """
 
 # User Dashboard View
-@dash_routes.get("/me")
+@dash_routes.post("/me")
 async def dashboard(request: Request, db: Session = Depends(get_db)):
     user_id = user_service.fetch_user_refresh_token(request, db=db)
     print("User_id:", user_id)
