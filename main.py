@@ -77,6 +77,7 @@ except Exception as e:
 
 origins = [
    "https://opticheck.netlify.app",
+   "http://localhost:5173",
    
 ]
 
