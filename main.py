@@ -1,6 +1,7 @@
 from fastapi_pagination import add_pagination
 import uvicorn
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 import uvicorn, os
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, Request
@@ -9,7 +10,6 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, HTMLResponse
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, status
-from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.requests import Request
 from starlette.middleware.sessions import SessionMiddleware  # required by google oauth
@@ -41,7 +41,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 add_pagination(app)
 
-
+# Load Alembic configuration
 def run_migrations():
     # Load Alembic configuration from alembic.ini
     alembic_cfg = Config("alembic.ini")
@@ -92,7 +92,7 @@ app.add_middleware(
 
 app.include_router(api_version_one)
 
-@app.get("/", tags=["API Home"])
+@app.get("/test", tags=["API Home"])
 async def get_root(request: Request) -> dict:
     return JsonResponseDict(
         message="Welcome to OptiCheck API. I'm Listening to Curls", status_code=status.HTTP_200_OK, data={"URL": ""}
@@ -170,6 +170,11 @@ async def exception(request: Request, exc: Exception):
         },
     )
 
+app.mount("/", StaticFiles(directory="frontend/dist", html=True), name="static")
+
+app.get("/index.html")
+async def spa_fallback():
+    return FileResponse("frontend/dist/index.html")
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000)) 

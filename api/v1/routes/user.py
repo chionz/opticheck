@@ -18,8 +18,7 @@ from api.v1.services.eye_tests import eyetest_service
 user_router = APIRouter(prefix="/users", tags=["Users"])
 
 
-""" 
-@user_router.get("/dashboard")
+@user_router.get("/me")
 async def dashboard(request: Request, db: Session = Depends(get_db)):
     user_id = user_service.fetch_user_refresh_token(request, db=db)
     if user_id == None:
@@ -47,9 +46,9 @@ async def dashboard(request: Request, db: Session = Depends(get_db)):
             "test_taken": no_test_done,
             "eye_test_data": vision
         }
-    ) """
+    )
 
-@user_router.get("/me", status_code=status.HTTP_200_OK, response_model=success_response)
+""" @user_router.get("/me", status_code=status.HTTP_200_OK, response_model=success_response)
 def get_current_user_details(
     db: Session = Depends(get_db),
     current_user: User = Depends(user_service.get_current_user),
@@ -75,7 +74,7 @@ def get_current_user_details(
             "test_taken": no_test_done,
             "eye_test_data": vision
         }
-    )
+    ) """
 
 
 @user_router.delete('/delete', status_code=200)
