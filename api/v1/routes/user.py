@@ -48,12 +48,13 @@ async def dashboard(request: Request, db: Session = Depends(get_db)):
         }
     )
 
-""" @user_router.get("/me", status_code=status.HTTP_200_OK, response_model=success_response)
+""" 
+@user_router.get("/me", status_code=status.HTTP_200_OK, response_model=success_response)
 def get_current_user_details(
     db: Session = Depends(get_db),
     current_user: User = Depends(user_service.get_current_user),
 ):
-    """Endpoint to get current user details"""
+    """"""Endpoint to get current user details""""""
     no_test_done = eyetest_service.all_test_count(db, user_id=current_user.id)
     vision = eyetest_service.dashboard_vision_test(db, user_id=current_user.id)
     user = jsonable_encoder(
