@@ -170,7 +170,7 @@ async def exception(request: Request, exc: Exception):
         },
     )
 
-app.mount("/", StaticFiles(directory="frontend/dist", html=True), name="frontend")
+app.mount("/", StaticFiles(directory="frontend/dist", html=True), name="static")
 
 app.get("/index.html")
 async def spa_fallback():
