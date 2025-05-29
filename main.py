@@ -172,8 +172,13 @@ async def exception(request: Request, exc: Exception):
 
 app.mount("/", StaticFiles(directory="frontend/dist", html=True), name="static")
 
-app.get("/index.html")
-async def spa_fallback():
+@app.get("/{full_path:path}", response_class=HTMLResponse)
+async def serve_spa(full_path: str):
+    if full_path.startswith("api") or "." in full_path:
+        return JSONResponse(
+            status_code=404,
+            content={"status": False, "message": "Not Found"}
+        )
     return FileResponse("frontend/dist/index.html")
 
 if __name__ == "__main__":
