@@ -29,17 +29,17 @@ class UserCreate(BaseModel):
     gender: Optional[str] = None
     age: Optional[int] = None
 
-    @field_validator("password")
-    @classmethod
-    def password_validator(cls, value):
-        if not re.match(
-            r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$",
-            value,
-        ):
-            raise ValueError(
-                "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character."
-            )
-        return value
+   #"""  @field_validator("password")
+   # @classmethod
+   # def password_validator(cls, value):
+   #     if not re.match(
+   #         r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$",
+   #         value,
+   #     ):
+   #         raise ValueError(
+   #             "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character."
+   #         )
+   #     return value """
 
 class UserUpdate(BaseModel):
     """Schema to update user information"""

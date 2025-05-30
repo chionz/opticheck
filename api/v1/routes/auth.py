@@ -47,15 +47,7 @@ def register(
     access_token = user_service.create_access_token(user_id=user.id)
     refresh_token = user_service.create_refresh_token(user_id=user.id)
 
-    # Send welcome email in the background
-    background_tasks.add_task(
-        send_email,
-        recipient=user.email,
-        template_name="welcome.html",
-        subject="Welcome to Our Platform",
-        context={"first_name": user.first_name, "last_name": user.last_name},
-    )
-
+    
     response = success_response(
         status_code=201,
         message="User created successfully",

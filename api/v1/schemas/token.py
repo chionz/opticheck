@@ -20,3 +20,6 @@ class TokenRequest(BaseModel):
 
 class OAuthToken(BaseModel):
     access_token: str
+
+class refreshToken(BaseModel):
+    refresh_token: str

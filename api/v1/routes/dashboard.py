@@ -4,6 +4,8 @@ from sqlalchemy.orm import Session
 
 from api.utils.success_response import success_response
 from api.v1.models.user import User
+from api.v1.schemas.token import refreshToken
+
 
 from api.db.database import get_db
 from api.v1.services.user import user_service
@@ -35,7 +37,7 @@ def get_refresh_token(request: Request, response: Response):
     return {"access_token": new_access_token} """
 
 # User Dashboard View
-@dash_routes.post("/me")
+@dash_routes.post("/me-me")
 async def dashboard(request: Request, db: Session = Depends(get_db)):
     user_id = user_service.fetch_user_refresh_token(request, db=db)
     print("User_id:", user_id)
@@ -50,7 +52,7 @@ async def dashboard(request: Request, db: Session = Depends(get_db)):
     
     token_data = user_service.verify_refresh_token(refresh_token=current_refresh_token)
     user_id =token_data.id
-    user = user_service.get_user_by_id(db=db, id=user_id) """
+    user = user_service.get_testuser_by_id(db=db, id=user_id) """
     no_test_done = eyetest_service.all_test_count(db, user_id=user_id)
     vision = eyetest_service.dashboard_vision_test(db, user_id=user_id)
     # print(wallet, user)
@@ -79,17 +81,23 @@ async def dashboard(request: Request, db: Session = Depends(get_db)):
 
 
 # User Dashboard View
-@dash_routes.post("/me1")
-async def dashboard(refresh_token:str, request: Request, db: Session = Depends(get_db)):
-    if refresh_token == None:
+@dash_routes.post("/me")
+async def dashboard(refresh_token:refreshToken, db: Session = Depends(get_db)):
+    print("Refresh Token Here:", refresh_token)
+    if refresh_token is None:
         raise HTTPException(status_code=401, detail="no refresh token provided")
     
-    token_data = user_service.verify_refresh_token(refresh_token=refresh_token)
+    token_data = user_service.verify_refresh_token(refresh_token=refresh_token.refresh_token)
     user_id =token_data.id
     user = user_service.get_user_by_id(db=db, id=user_id)
     no_test_done = eyetest_service.all_test_count(db, user_id=user_id)
     vision = eyetest_service.dashboard_vision_test(db, user_id=user_id)
-    # print(wallet, user)
+    data= {
+            "user": user,
+            "test_taken": no_test_done,
+            "eye_test_data": vision
+        }
+    print(data)
 
     user = jsonable_encoder(
             user,
