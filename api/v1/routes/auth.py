@@ -19,7 +19,7 @@ from api.utils.success_response import success_response
 from api.core.dependencies.email_sender import send_email
 from api.utils.send_mail import send_magic_link
 from api.v1.schemas.user import Token, LoginRequest, UserCreate, EmailRequest, WalletLoginPayload
-from api.v1.schemas.token import TokenRequest
+from api.v1.schemas.token import TokenRequest, refreshToken
 from api.v1.schemas.user import MagicLinkRequest
 from api.db.database import get_db
 from api.v1.models.user import User
@@ -241,7 +241,7 @@ def refresh_access_token(
 def get_access_token(
     #request: Request, 
     # response: Response, 
-    refresh_token: str):
+    refresh_token: refreshToken):
     #current_refresh_token = request.cookies.get("refresh_token")
     new_access_token, new_refresh_token = user_service.refresh_access_token(
         current_refresh_token = refresh_token
