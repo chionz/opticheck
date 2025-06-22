@@ -21,9 +21,15 @@ class EyeTestService(Service):
     def delete(self):
         pass
 
-    def snellen_test_create(self, db:Session, schema:SnellenTest):
-        schema.visual_acuity = f'{schema.user_acuity}/{schema.normal_acuity}'
-        test = SnellenChartTest(**schema.model_dump())
+    def snellen_test_create(self, db:Session, schema:SnellenTest, user_id:str):
+        result = {"user_id": user_id,
+        "eye_tested": "left",
+        "normal_acuity": schema.normal_acuity,
+        "user_acuity": schema.user_acuity,
+        "visual_acuity": f'{schema.user_acuity}/{schema.normal_acuity}',
+        "distance": schema.distance}
+
+        test = SnellenChartTest(**result)
         db.add(test)
         db.commit()
         db.refresh(test)

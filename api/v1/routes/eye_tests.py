@@ -26,7 +26,7 @@ async def snellen_chart(schema: SnellenTest,
     '''This Saves  User Snellen test result'''
 
     # Store test current user
-    test = eyetest_service.snellen_test_create(db, schema=schema)
+    test = eyetest_service.snellen_test_create(db, schema=schema, user_id=current_user.id)
 
     return success_response(
         status_code=200,

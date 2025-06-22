@@ -237,17 +237,20 @@ def refresh_access_token(
 
     return response
 
-@auth.get("/token")
-def get_access_token(request: Request, response: Response):
-    current_refresh_token = request.cookies.get("refresh_token")
+@auth.post("/token")
+def get_access_token(
+    #request: Request, 
+    # response: Response, 
+    refresh_token: str):
+    #current_refresh_token = request.cookies.get("refresh_token")
     new_access_token, new_refresh_token = user_service.refresh_access_token(
-        current_refresh_token
+        current_refresh_token = refresh_token
     )
-    response.set_cookie(key="access_token", value=new_access_token, httponly=True)
-    response.set_cookie(key="refresh_token", value=new_refresh_token, httponly=True)
+    #response.set_cookie(key="access_token", value=new_access_token, httponly=True)
+    #response.set_cookie(key="refresh_token", value=new_refresh_token, httponly=True)
     if not new_access_token:
         raise HTTPException(status_code=401, detail="Not authenticated")
-    return {"access_token": new_access_token}
+    return {"access_token": new_access_token, "refresh_token": new_refresh_token}
 
 """ @auth.get("/refresh-token")
 def get_refresh_token(request: Request, response: Response):
