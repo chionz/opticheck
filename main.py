@@ -33,6 +33,7 @@ from api.v1.services.user import user_service
 app = FastAPI()
 origins = [
     "http://localhost:5173",
+    "http://0.0.0.0:10000",
     "https://opticheck.netlify.app"
 ]
 
@@ -44,7 +45,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
+ 
 add_pagination(app)
 from api.v1.routes import api_version_one
 
