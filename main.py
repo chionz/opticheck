@@ -31,6 +31,23 @@ from api.utils.config import templates_env
 from api.db.database import get_db as db
 from api.v1.services.user import user_service
 
+app = FastAPI()
+origins = [
+    "http://localhost:5173",
+    "https://opticheck.netlify.app"
+]
+
+
+app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     #run_migrations()
@@ -38,7 +55,6 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(lifespan=lifespan)
 add_pagination(app)
 
 # Load Alembic configuration
@@ -74,21 +90,6 @@ except Exception as e:
     print(f"Error mounting media directory: {e}")
     pass  # Ignore the error and continue
 
-
-origins = [
-    "http://localhost:5173",
-    "https://opticheck.netlify.app"
-]
-
-
-app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 app.include_router(api_version_one)
 
