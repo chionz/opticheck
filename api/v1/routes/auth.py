@@ -252,6 +252,34 @@ def get_access_token(
         raise HTTPException(status_code=401, detail="Not authenticated")
     return {"access_token": new_access_token, "refresh_token": new_refresh_token}
 
+
+
+@auth.post("/tokenn")
+def get_access_token(
+    request: Request, 
+    # response: Response, 
+    refresh_token: refreshToken):
+    #current_refresh_token = request.cookies.get("refresh_token")
+    new_access_token, new_refresh_token = user_service.refresh_access_token(
+        current_refresh_token = refresh_token
+    )
+    response = JSONResponse({
+        "access_token": new_access_token,
+        "refresh_token": new_refresh_token,
+    })
+
+    # Explicit CORS Headers
+    origin = request.headers.get("origin")
+    if origin == "http://localhost:5173":
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+
+    return response
+
+    if not new_access_token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    return {"access_token": new_access_token, "refresh_token": new_refresh_token}
+
 """ @auth.get("/refresh-token")
 def get_refresh_token(request: Request, response: Response):
     current_refresh_token = request.cookies.get("refresh_token")
