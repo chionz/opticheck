@@ -244,7 +244,7 @@ def get_access_token(
     refresh_token: refreshToken):
     #current_refresh_token = request.cookies.get("refresh_token")
     new_access_token, new_refresh_token = user_service.refresh_access_token(
-        current_refresh_token = refresh_token
+        current_refresh_token = refresh_token.refresh_token
     )
     #response.set_cookie(key="access_token", value=new_access_token, httponly=True)
     #response.set_cookie(key="refresh_token", value=new_refresh_token, httponly=True)
@@ -261,7 +261,7 @@ def get_access_token(
     refresh_token: refreshToken):
     #current_refresh_token = request.cookies.get("refresh_token")
     new_access_token, new_refresh_token = user_service.refresh_access_token(
-        current_refresh_token = refresh_token
+        current_refresh_token = refresh_token.refresh_token
     )
     response = JSONResponse({
         "access_token": new_access_token,

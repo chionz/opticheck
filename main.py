@@ -16,7 +16,6 @@ from starlette.middleware.sessions import SessionMiddleware  # required by googl
 
 from api.utils.json_response import JsonResponseDict
 from api.utils.logger import logger
-from api.v1.routes import api_version_one
 from api.utils.settings import settings
 
 import subprocess
@@ -37,7 +36,6 @@ origins = [
     "https://opticheck.netlify.app"
 ]
 
-
 app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
 app.add_middleware(
     CORSMiddleware,
@@ -47,15 +45,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+add_pagination(app)
+from api.v1.routes import api_version_one
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     #run_migrations()
     #create_database()
     yield
-
-
-add_pagination(app)
 
 # Load Alembic configuration
 def run_migrations():
