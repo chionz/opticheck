@@ -106,11 +106,11 @@ class EyeTestService(Service):
 
     # Tumbling E Test
     def tumbling_test_create(self, db:Session, schema:TumblingTest, user_id:str):
-            
+            user_score = ((schema.correct_answers/schema.total_questions)*100)
             result = {"user_id": user_id,
             "total_questions": schema.total_questions,
             "correct_answers": schema.correct_answers,
-            "score": schema.score,}
+            "score": f"{user_score}%",}
 
             test = TumblingETest(**result)
             db.add(test)
@@ -127,11 +127,11 @@ class EyeTestService(Service):
     
     # Lea Symbol Test
     def lea_test_create(self, db:Session, schema:LeaSymbolTest, user_id:str):
-            
+            user_score = ((schema.correct_answers/schema.total_questions)*100)
             result = {"user_id": user_id,
             "total_questions": schema.total_questions,
             "correct_answers": schema.correct_answers,
-            "score": schema.score,}
+            "score": f"{user_score}%",}
 
             test = LeaSymbolsETest(**result)
             db.add(test)
