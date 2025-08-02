@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Boolean, Enum
+from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Boolean, Enum, text
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from uuid_extensions import uuid7
@@ -38,7 +38,7 @@ class ColorBlindnessTest(Base):
 
     total_questions = Column(Integer, nullable=False)
     correct_answers = Column(Integer, nullable=False)
-    is_color_blind = Column(Boolean, default=False)
+    score = Column(Boolean, default=False)
     status = Column(Enum(TestStatusEnum), default=TestStatusEnum.completed)
     tested_at = Column(DateTime(timezone=True), server_default=func.now())
 
@@ -51,10 +51,24 @@ class TumblingETest(Base):
     id = Column(String, primary_key=True, default=lambda: str(uuid7()))
     user_id = Column(String, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
 
-    correct_directions = Column(Integer, nullable=False)
-    total_attempts = Column(Integer, nullable=False)
-    score_percentage = Column(Integer, nullable=False)
+    total_questions = Column(Integer, nullable=False)
+    correct_answers = Column(Integer, nullable=False)
+    score = Column(String, nullable=False, server_default=text("'0%'"))
     status = Column(Enum(TestStatusEnum), default=TestStatusEnum.completed)
     tested_at = Column(DateTime(timezone=True), server_default=func.now())
 
     user = relationship("User", back_populates="tumbling_tests")
+
+class LeaSymbolsETest(Base):
+    __tablename__ = "lea_symbols_tests"
+
+    id = Column(String, primary_key=True, default=lambda: str(uuid7()))
+    user_id = Column(String, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+
+    total_questions = Column(Integer, nullable=False)
+    correct_answers = Column(Integer, nullable=False)
+    score = Column(String, nullable=False, server_default=text("'0%'"))
+    #status = Column(Enum(TestStatusEnum), default=TestStatusEnum.completed)
+    tested_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    user = relationship("User", back_populates="lea_symbols_tests")

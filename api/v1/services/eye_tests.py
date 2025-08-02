@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 from api.core.base.services import Service
-from api.v1.models.eye_tests import SnellenChartTest, ColorBlindnessTest, TumblingETest
+from api.v1.models.eye_tests import LeaSymbolsETest, SnellenChartTest, ColorBlindnessTest, TumblingETest
 from api.v1.models.user import User
-from api.v1.schemas.eye_tests import SnellenTest
+from api.v1.schemas.eye_tests import ColorTest, LeaSymbolTest, SnellenTest, TumblingTest
 
 
 class EyeTestService(Service):
@@ -81,6 +81,69 @@ class EyeTestService(Service):
 
         return snellen
     
+
+    # Color Blindness
+
+    def color_test_create(self, db:Session, schema:ColorTest, user_id:str):
+            
+            result = {"user_id": user_id,
+            "total_questions": schema.total_questions,
+            "correct_answers": schema.correct_answers,
+            "score": schema.score,}
+
+            test = ColorBlindnessTest(**result)
+            db.add(test)
+            db.commit()
+            db.refresh(test)
+
+            return test
     
+    def user_color_tests(self, db:Session, user_id):
+
+        tests = db.query(ColorBlindnessTest).filter(user_id==user_id).all()
+
+        return tests
+
+    # Tumbling E Test
+    def tumbling_test_create(self, db:Session, schema:TumblingTest, user_id:str):
+            
+            result = {"user_id": user_id,
+            "total_questions": schema.total_questions,
+            "correct_answers": schema.correct_answers,
+            "score": schema.score,}
+
+            test = TumblingETest(**result)
+            db.add(test)
+            db.commit()
+            db.refresh(test)
+
+            return test
+    
+    def user_tumbling_tests(self, db:Session, user_id):
+
+        tests = db.query(TumblingETest).filter(user_id==user_id).all()
+
+        return tests
+    
+    # Lea Symbol Test
+    def lea_test_create(self, db:Session, schema:LeaSymbolTest, user_id:str):
+            
+            result = {"user_id": user_id,
+            "total_questions": schema.total_questions,
+            "correct_answers": schema.correct_answers,
+            "score": schema.score,}
+
+            test = LeaSymbolsETest(**result)
+            db.add(test)
+            db.commit()
+            db.refresh(test)
+
+            return test
+    
+    def user_lea_tests(self, db:Session, user_id):
+
+        tests = db.query(LeaSymbolsETest).filter(user_id==user_id).all()
+
+        return tests
 
 eyetest_service = EyeTestService()
