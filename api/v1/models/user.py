@@ -50,6 +50,9 @@ class User(BaseTableModel):
         "TumblingETest", back_populates="user", cascade="all, delete-orphan"
     )
 
+    lea_symbols_tests = relationship(
+        "LeaSymbolsETest", back_populates="user", cascade="all, delete-orphan"
+    )
 
     def to_dict(self):
         obj_dict = super().to_dict()
