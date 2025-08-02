@@ -18,7 +18,7 @@ config = context.config
 fileConfig(config.config_file_name)
 
 # Use environment variable for DB URL
-db_url = os.getenv("DB_URL")
+db_url = f"postgresql://opticheck:792556aA*@localhost/opticheck"
 
 if db_url:
     config.set_main_option("sqlalchemy.url", db_url)
