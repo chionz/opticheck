@@ -13,6 +13,7 @@ from sqlalchemy.orm import Session
 from api.utils.success_response import success_response
 from api.v1.models.user import User
 from api.v1.schemas.eye_tests import LeaSymbolTest, SnellenTest, ColorTest, TumblingTest
+from api.v1.schemas.token import refreshToken
 from api.v1.services.user import user_service
 from api.v1.services.eye_tests import eyetest_service
 
@@ -164,6 +165,24 @@ async def get_lea_test(db: Session = Depends(get_db),
 
     # get test current user
     tests = eyetest_service.user_lea_tests(db,user_id=current_user.id)
+
+    return success_response(
+        status_code=200,
+        message='Test successfully retrieved',
+        data= tests
+    )
+
+@eye_routes.post('/my-tests', status_code=200, response_model=success_response)
+async def get_user_test(refresh_token:refreshToken, 
+                        db: Session = Depends(get_db), ):
+    print("Refresh Token Here:", refresh_token)
+    if refresh_token is None:
+        raise HTTPException(status_code=401, detail="no refresh token provided")
+    
+    token_data = user_service.verify_refresh_token(refresh_token=refresh_token.refresh_token)
+    user_id =token_data.id
+    
+    tests = eyetest_service.user_tests(db, user_id)
 
     return success_response(
         status_code=200,

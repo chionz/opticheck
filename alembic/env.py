@@ -6,6 +6,7 @@ from sqlalchemy import pool
 from alembic import context
 import os
 from api.db.database import Base
+from api.utils.settings import settings
 #rom sqlalchemy import MetaData
 
 #target_metadata = Base.metadata
@@ -18,7 +19,7 @@ config = context.config
 fileConfig(config.config_file_name)
 
 # Use environment variable for DB URL
-db_url = os.getenv("DB_URL")
+db_url = settings.DB_URL
 
 if db_url:
     config.set_main_option("sqlalchemy.url", db_url)

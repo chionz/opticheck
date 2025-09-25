@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import cast, select, union_all, literal_column, String
 from api.core.base.services import Service
 from api.v1.models.eye_tests import LeaSymbolsETest, SnellenChartTest, ColorBlindnessTest, TumblingETest
 from api.v1.models.user import User
@@ -155,5 +156,69 @@ class EyeTestService(Service):
         tests = db.query(LeaSymbolsETest).filter(user_id==user_id).all()
 
         return tests
+    
+        
+    def user_tests(self, db: Session, user_id: str):
+        snellen_q = (
+            select(
+                SnellenChartTest.id.label("id"),
+                SnellenChartTest.user_id.label("user_id"),
+                SnellenChartTest.tested_at.label("tested_at"),
+                cast(SnellenChartTest.visual_acuity, String).label("result"), 
+                literal_column("'snellen'").label("test_type"),
+            )
+            .where(SnellenChartTest.user_id == user_id)
+        )
+
+        color_q = (
+            select(
+                ColorBlindnessTest.id.label("id"),
+                ColorBlindnessTest.user_id.label("user_id"),
+                ColorBlindnessTest.tested_at.label("tested_at"),
+                cast(ColorBlindnessTest.score, String).label("result"),
+                literal_column("'color_blindness'").label("test_type"),
+            )
+            .where(ColorBlindnessTest.user_id == user_id)
+        )
+
+        tumbling_q = (
+            select(
+                TumblingETest.id.label("id"),
+                TumblingETest.user_id.label("user_id"),
+                TumblingETest.tested_at.label("tested_at"),
+                cast(TumblingETest.score, String).label("result"),
+                literal_column("'tumbling_e'").label("test_type"),
+            )
+            .where(TumblingETest.user_id == user_id)
+        )
+
+        lea_q = (
+            select(
+                LeaSymbolsETest.id.label("id"),
+                LeaSymbolsETest.user_id.label("user_id"),
+                LeaSymbolsETest.tested_at.label("tested_at"),
+                cast(LeaSymbolsETest.score, String).label("result"),
+                literal_column("'lea_symbols'").label("test_type"),
+            )
+            .where(LeaSymbolsETest.user_id == user_id)
+        )
+
+        # Combine with UNION ALL
+        union_q = snellen_q.union_all(color_q, tumbling_q, lea_q)
+
+        # Run & fetch as dict-like rows
+        results = db.execute(union_q).mappings().all()
+
+        return [
+            {
+                "id": row["id"],
+                "user_id": row["user_id"],
+                "result": row["result"],
+                "tested_at": row["tested_at"],
+                "test_type": row["test_type"], 
+            }
+            for row in results
+        ]
+
 
 eyetest_service = EyeTestService()
