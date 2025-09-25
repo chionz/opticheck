@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import cast, select, union_all, literal_column, String
+from sqlalchemy import cast, select, union_all, literal_column, String, desc
 from api.core.base.services import Service
 from api.v1.models.eye_tests import LeaSymbolsETest, SnellenChartTest, ColorBlindnessTest, TumblingETest
 from api.v1.models.user import User
@@ -78,7 +78,7 @@ class EyeTestService(Service):
         return all_count
     
     def dashboard_vision_test(self, db:Session, user_id):
-        snellen = db.query(SnellenChartTest).filter(user_id==user_id).first()
+        snellen = db.query(SnellenChartTest).filter(user_id==user_id).order_by(SnellenChartTest.tested_at.desc()).first()
 
         return snellen
     
@@ -204,10 +204,14 @@ class EyeTestService(Service):
         )
 
         # Combine with UNION ALL
-        union_q = snellen_q.union_all(color_q, tumbling_q, lea_q)
+        union_q = snellen_q.union_all(color_q, tumbling_q, lea_q).subquery()
+
+        # Apply ORDER BY tested_at DESC
+        ordered_q = select(union_q).order_by(desc(union_q.c.tested_at))
 
         # Run & fetch as dict-like rows
-        results = db.execute(union_q).mappings().all()
+        results = db.execute(ordered_q).mappings().all()
+
 
         return [
             {
