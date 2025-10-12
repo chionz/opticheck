@@ -23,11 +23,28 @@ class EyeTestService(Service):
         pass
 
     def snellen_test_create(self, db:Session, schema:SnellenTest, user_id:str):
+        ratio = schema.user_acuity / schema.normal_acuity
+        print(ratio)
+
+        # realistic clinical numbers
+        snellen_steps = [200, 100, 80, 60, 50, 40, 30, 25, 20]
+
+        #converting ratio to user acuity
+        normal_acuity = int(round((schema.user_acuity/schema.user_acuity)*40))
+        denominator_ratio = int(round(normal_acuity / ratio)) if ratio > 0 else 200
+
+        # Find the closest standard denominator
+        closest = min(snellen_steps, key=lambda x: abs(x - denominator_ratio))
+
+        """ # Mathematical Conversions
+        user_acuity = int(round((schema.user_acuity/schema.user_acuity)*40))
+        normal_acuity = int(round((schema.normal_acuity/schema.user_acuity)*40)) """
+
         result = {"user_id": user_id,
         "eye_tested": "left",
-        "normal_acuity": schema.normal_acuity,
-        "user_acuity": schema.user_acuity,
-        "visual_acuity": f'{schema.user_acuity}/{schema.normal_acuity}',
+        "normal_acuity": normal_acuity,
+        "user_acuity": ratio,
+        "visual_acuity": f'{normal_acuity}/{closest}',
         "distance": schema.distance}
 
         test = SnellenChartTest(**result)
