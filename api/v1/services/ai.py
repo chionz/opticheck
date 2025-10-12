@@ -27,7 +27,7 @@ class AiService(Service):
 
 
     def ai_response(self, text: str) -> dict:
-        genai.configure(api_key="AIzaSyDlPrqRXNpJmw53BXhqNB9cVGXJyffTmQY")
+        genai.configure(api_key=GM_API)
         """ for m in genai.list_models():
             print(m.name) """
 
