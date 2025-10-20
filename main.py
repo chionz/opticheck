@@ -32,6 +32,7 @@ from api.v1.services.user import user_service
 
 app = FastAPI()
 origins = [
+    "http://localhost:9000",
     "http://localhost:5173",
     "http://0.0.0.0:10000",
     "https://opticheck.netlify.app"
