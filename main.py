@@ -10,7 +10,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, HTMLResponse
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, status
-from fastapi.middleware.cors import CORSMiddleware
+#from fastapi.middleware.cors import CORSMiddleware
 from starlette.requests import Request
 from starlette.middleware.sessions import SessionMiddleware  # required by google oauth
 
@@ -39,13 +39,13 @@ origins = [
 ]
 
 app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
-app.add_middleware(
+""" app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-)
+) """
  
 add_pagination(app)
 from api.v1.routes import api_version_one
