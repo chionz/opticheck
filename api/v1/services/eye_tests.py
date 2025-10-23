@@ -71,17 +71,17 @@ class EyeTestService(Service):
         return tests
 
     def snellen_chart_count(self, db:Session, user_id):
-        snellen_user_test = db.query(SnellenChartTest).filter(user_id==user_id).count()
+        snellen_user_test = db.query(SnellenChartTest).filter(SnellenChartTest.user_id==user_id).count()
 
         return snellen_user_test
         
     def color_blindness_test_count(self, db:Session, user_id):
-        snellen_user_test = db.query(ColorBlindnessTest).filter(user_id==user_id).count()
+        snellen_user_test = db.query(ColorBlindnessTest).filter(ColorBlindnessTest.user_id==user_id).count()
 
         return snellen_user_test
     
     def tumbling_etest_count(self, db:Session, user_id):
-        snellen_user_test = db.query(TumblingETest).filter(user_id==user_id).count()
+        snellen_user_test = db.query(TumblingETest).filter(TumblingETest.user_id==user_id).count()
 
         return snellen_user_test
     
@@ -95,7 +95,7 @@ class EyeTestService(Service):
         return all_count
     
     def dashboard_vision_test(self, db:Session, user_id):
-        snellen = db.query(SnellenChartTest).filter(user_id==user_id).order_by(SnellenChartTest.tested_at.desc()).first()
+        snellen = db.query(SnellenChartTest).filter(SnellenChartTest.user_id==user_id).order_by(SnellenChartTest.tested_at.desc()).first()
 
         return snellen
     
