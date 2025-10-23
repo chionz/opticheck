@@ -90,8 +90,8 @@ async def dashboard(refresh_token:refreshToken, db: Session = Depends(get_db)):
     token_data = user_service.verify_refresh_token(refresh_token=refresh_token.refresh_token)
     user_id =token_data.id
     user = user_service.get_user_by_id(db=db, id=user_id)
-    no_test_done = eyetest_service.all_test_count(db, user_id=user_id)
-    vision = eyetest_service.dashboard_vision_test(db, user_id=user_id)
+    no_test_done = eyetest_service.all_test_count(db, user_id)
+    vision = eyetest_service.dashboard_vision_test(db, user_id)
     data= {
             "user": user,
             "test_taken": no_test_done,
