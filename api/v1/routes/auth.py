@@ -253,35 +253,23 @@ def get_access_token(
     return {"access_token": new_access_token, "refresh_token": new_refresh_token}
 
 
-
-allowed_origins = {
-    "http://localhost:5173",
-    "http://0.0.0.0:10000",
-    "https://opticheck.netlify.app"
-}
-
 @auth.post("/tokenn")
 def get_access_token(request: Request, refresh_token: refreshToken):
     new_access_token, new_refresh_token = user_service.refresh_access_token(
         current_refresh_token=refresh_token.refresh_token
     )
+    if not new_access_token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
 
     response = JSONResponse({
         "access_token": new_access_token,
         "refresh_token": new_refresh_token,
     })
 
-    origin = request.headers.get("origin")
-    if origin in allowed_origins:
-        response.headers["Access-Control-Allow-Origin"] = origin
-        response.headers["Access-Control-Allow-Credentials"] = "true"
-
-    print("origin:", origin)
     return response
 
 
-    if not new_access_token:
-        raise HTTPException(status_code=401, detail="Not authenticated")
+    
     return {"access_token": new_access_token, "refresh_token": new_refresh_token}
 
 """ @auth.get("/refresh-token")
